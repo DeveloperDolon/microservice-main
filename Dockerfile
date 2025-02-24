@@ -26,6 +26,6 @@ RUN apt-get update && apt-get install -y \
     COPY . .
     RUN composer install
 
-    CMD php artisan serve --host=0.0.0.0
-    EXPOSE 8000
+    CMD php artisan serve --host=0.0.0.0 --port=3000
+    EXPOSE 3000
     
