@@ -10,7 +10,6 @@ RUN apt-get update && apt-get install -y \
         libzip-dev \
         libonig-dev \
         graphviz \
-
         && docker-php-ext-configure gd \
         && docker-php-ext-install -j$(nproc) gd \
         && docker-php-ext-install pdo_mysql \
@@ -21,9 +20,11 @@ RUN apt-get update && apt-get install -y \
         && curl -sS https://getcomposer.org/installer | php -- \
         --install-dir=/usr/local/bin --filename=composer
 
-
     WORKDIR /app
     COPY . .
+
+    RUN chmod -R 777 /app
+
     RUN composer install
 
     CMD php artisan serve --host=0.0.0.0 --port=3000
