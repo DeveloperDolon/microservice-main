@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Jobs\ProductCreateJob;
 use App\Jobs\TestJob;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
@@ -21,6 +22,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        App::bindMethod(TestJob::class . '@handle', fn($job) => $job->handle());
+        App::bindMethod(ProductCreateJob::class . '@handle', fn($product) => $product->handle());
     }
 }
