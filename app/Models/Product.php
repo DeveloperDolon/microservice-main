@@ -11,5 +11,5 @@ class Product extends Model
 
     protected $guarded = [];
 
-    protected $fillable = ['title', 'image'];
+    protected $fillable = ['id', 'title', 'image'];
 }
