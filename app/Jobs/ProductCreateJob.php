@@ -22,7 +22,7 @@ class ProductCreateJob implements ShouldQueue
     public function handle(): void
     {
         Product::create([
-            'name' => $this->data['name'],
+            'title' => $this->data['name'],
             'image' => $this->data['image']   
         ]);
     }
