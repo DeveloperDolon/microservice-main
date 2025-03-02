@@ -16,6 +16,11 @@ services:
       - DB_DATABASE=main
       - DB_USERNAME=root
       - DB_PASSWORD=root
+    deploy:
+      resources:
+        limits:
+          memory: 512M 
+          cpus: "0.5"  
 
   main_phpmyadmin:
     image: phpmyadmin:latest
@@ -26,6 +31,11 @@ services:
       MYSQL_ROOT_PASSWORD: root
     ports:
       - "5001:80"
+    deploy:
+    resources:
+      limits:
+        memory: 256M
+        cpus: "0.25"
 
   main_db:
     image: mysql:5.7
@@ -37,3 +47,8 @@ services:
       - ./storage/dbdata:/var/lib/mysql
     ports:
       - "3307:3306"
+    deploy:
+      resources:
+        limits:
+          memory: 1G  
+          cpus: "1.0" 
