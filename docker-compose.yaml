@@ -16,6 +16,7 @@ services:
       - DB_DATABASE=main
       - DB_USERNAME=root
       - DB_PASSWORD=root
+
     deploy:
       resources:
         limits:
@@ -32,10 +33,10 @@ services:
     ports:
       - "5001:80"
     deploy:
-    resources:
-      limits:
-        memory: 256M
-        cpus: "0.25"
+      resources:
+        limits:
+          memory: 256M
+          cpus: "0.25"
 
   main_db:
     image: mysql:5.7
