@@ -48,7 +48,7 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - main_db
-    command: bash -c "wait-for-it.sh main_db:3306 -- php artisan queue:work --queue=main_queue"
+    command: bash -c "wait-for-it.sh main_db:3306 -- php artisan queue:work rabbitmq --queue=main_queue"
     environment:
       - DB_HOST=main_db
       - DB_PORT=3306
