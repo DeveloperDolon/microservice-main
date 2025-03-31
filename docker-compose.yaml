@@ -1,9 +1,9 @@
-version: '3.9'
+version: "3.9"
 
 services:
   main:
     container_name: main
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
     command: bash -c "wait-for-it.sh main_db:3306 -- php artisan serve --host=0.0.0.0 --port=3000"
@@ -22,8 +22,8 @@ services:
     deploy:
       resources:
         limits:
-          memory: 512M 
-          cpus: "0.5"  
+          memory: 512M
+          cpus: "0.5"
 
   main_phpmyadmin:
     container_name: main_phpmyadmin
@@ -43,12 +43,12 @@ services:
 
   main_queue:
     container_name: main_queue
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
     depends_on:
       - main_db
-    command: bash -c "wait-for-it.sh main_db:3306 -- php artisan queue:work"
+    command: bash -c "wait-for-it.sh main_db:3306 -- php artisan queue:work --queue=main_queue"
     environment:
       - DB_HOST=main_db
       - DB_PORT=3306
@@ -66,9 +66,9 @@ services:
   main_db:
     container_name: main_db
     image: mysql:8.0
-    command: 
-      - --defaultcommand: --default-authentication-plugin=mysql_native_password-authentication-plugin=mysql_native_password
-      - --host_cache_size=0 
+    command:
+      - --default-authentication-plugin=mysql_native_password
+      - --host_cache_size=0
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: main
@@ -79,5 +79,5 @@ services:
     deploy:
       resources:
         limits:
-          memory: 1G  
-          cpus: "1.0" 
+          memory: 1G
+          cpus: "1.0"
