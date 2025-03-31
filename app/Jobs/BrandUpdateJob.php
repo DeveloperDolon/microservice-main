@@ -6,10 +6,10 @@ use App\Models\Brand;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
-class BrandCreateJob implements ShouldQueue
+class BrandUpdateJob implements ShouldQueue
 {
     use Queueable;
-
+    
     private $data;
     public function __construct($data)
     {
@@ -18,6 +18,6 @@ class BrandCreateJob implements ShouldQueue
 
     public function handle(): void
     {
-        Brand::create([...$this->data]);
+        Brand::find($this->data['id'])->update([...$this->data]);
     }
 }
