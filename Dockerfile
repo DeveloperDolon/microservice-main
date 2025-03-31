@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y \
         libzip-dev \
         libonig-dev \
         graphviz \
+        wget \
         && docker-php-ext-configure gd \
         && docker-php-ext-install -j$(nproc) gd \
         && docker-php-ext-install pdo_mysql \
@@ -20,13 +21,11 @@ RUN apt-get update && apt-get install -y \
         && curl -sS https://getcomposer.org/installer | php -- \
         --install-dir=/usr/local/bin --filename=composer
 
-    WORKDIR /app
-    COPY . .
+RUN wget https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh -O /usr/local/bin/wait-for-it.sh \
+    && chmod +x /usr/local/bin/wait-for-it.sh
 
-    RUN chmod -R 777 /app
+WORKDIR /app
+COPY . .
 
-    RUN composer install
-
-    CMD php artisan serve --host=0.0.0.0 --port=3000
-    EXPOSE 3000
-    
+RUN chmod -R 777 /app/storage
+RUN composer install
