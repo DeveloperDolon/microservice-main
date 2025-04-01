@@ -14,6 +14,7 @@ class Product extends Model
     public $incrementing = false;
 
     protected $fillable = [
+        'id',
         'name',
         'images',
         'discount',
@@ -36,12 +37,5 @@ class Product extends Model
     public function variants() 
     {
         return $this->hasMany(Variant::class, 'product_id');
-    }
-
-    public static function booted()
-    {
-        static::creating(function ($model) {
-            $model->id = Str::uuid();
-        });
     }
 }
