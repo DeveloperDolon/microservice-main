@@ -14,6 +14,7 @@ class Brand extends Model
     public $incrementing = false;
 
     protected $fillable = [
+        'id',
         'name',
         'banner',
         'logo',
@@ -25,12 +26,5 @@ class Brand extends Model
     public function products()
     {
         return $this->hasMany(Product::class, 'brand_id');
-    }
-
-    public static function booted()
-    {
-        static::creating(function ($model) {
-            $model->id = Str::uuid();
-        });
     }
 }
