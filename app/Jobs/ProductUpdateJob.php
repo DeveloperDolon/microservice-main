@@ -6,7 +6,7 @@ use App\Models\Product;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
-class ProductCreateJob implements ShouldQueue
+class ProductUpdateJob implements ShouldQueue
 {
     use Queueable;
 
@@ -18,8 +18,7 @@ class ProductCreateJob implements ShouldQueue
 
     public function handle(): void
     {
-        Product::create([
-            'id' => $this->data['id'],
+        Product::find($this->data['id'])->update([
             'name' => $this->data['name'],
             'images' => $this->data['images'],
             'discount' => $this->data['discount'],

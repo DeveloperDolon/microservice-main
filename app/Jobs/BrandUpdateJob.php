@@ -24,7 +24,9 @@ class BrandUpdateJob implements ShouldQueue
             'location' => $this->data['location'],
             'title' => $this->data['title'],
             'logo' => $this->data['logo'],
-            'banner' => $this->data['banner']
+            'banner' => $this->data['banner'],
+            'created_at' => $this->data['created_at'],
+            'updated_at' => $this->data['updated_at'],
         ]);
     }
 }

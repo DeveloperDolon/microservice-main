@@ -26,7 +26,9 @@ class Product extends Model
         'shipping_cost',
         'benefit',
         'seller_id',
-        'brand_id'
+        'brand_id',
+        'created_at',
+        'updated_at',
     ];
 
     public function brand()
