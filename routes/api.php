@@ -3,7 +3,13 @@
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
-Route::apiResource('products', ProductController::class);
+Route::controller(ProductController::class)
+->prefix('product')
+->group(function () {
+    Route::get('/list', 'list');
+    Route::get('/show/{id}', 'show');
+});
+
 Route::get('/', function () {
     return response()->json([
         'message' => 'Welcome to the Main API',
