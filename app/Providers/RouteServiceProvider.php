@@ -2,23 +2,56 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
 class RouteServiceProvider extends ServiceProvider
 {
-    /**
-     * Register services.
-     */
-    public function register(): void
+    protected $namespace = 'App\Http\Controllers';
+
+    public function boot()
     {
-        //
+        $this->configureRateLimiting();
+        parent::boot();
     }
 
-    /**
-     * Bootstrap services.
-     */
-    public function boot(): void
+    public function map()
     {
-        //
+        $this->mapApiRoutes();
+        $this->mapConsoleRoutes();
+    }
+
+    // Optionally map API routes
+    protected function mapApiRoutes()
+    {
+        Route::prefix('api')
+            ->middleware(['throttle:api'])
+            ->group(function () {
+                Route::middleware(['api', 'global'])
+                ->prefix('v1')
+                ->namespace($this->namespace)
+                ->group(function() {
+                    require base_path('routes/api.php');
+                    require base_path('routes/auth.php');
+                });
+            });
+    }
+
+    protected function mapConsoleRoutes()
+    {
+        Route::group([
+            'prefix' => 'console',
+        ], function () {
+            require base_path('routes/console.php');
+        });
+    }
+
+    protected function configureRateLimiting()
+    {
+        RateLimiter::for('api', function ($request) {
+            return Limit::perMinute(60)->by(optional($request->user())->id ?: $request->ip());
+        });
     }
 }
