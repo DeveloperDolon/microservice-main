@@ -29,7 +29,7 @@ class RouteServiceProvider extends ServiceProvider
         Route::prefix('api')
             ->middleware(['throttle:api'])
             ->group(function () {
-                Route::middleware(['api', 'global'])
+                Route::middleware(['api'])
                 ->prefix('v1')
                 ->namespace($this->namespace)
                 ->group(function() {
