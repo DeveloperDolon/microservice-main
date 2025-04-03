@@ -48,6 +48,32 @@ class AuthController extends BaseController
         return $this->sendErrorResponse('Invalid credentials', 401);
     }
 
+    public function me()
+    {
+        $user = request()->user();
+        return $this->sendSuccessResponse($user, 'User retrieved successfully');
+    }
+
+    public function updateProfile(AuthRequest $request)
+    {
+        $user = request()->user();
+        $validatedData = $request->validated();
+
+        $user->name = $validatedData['name'] ?? $user->name;
+        $user->email = $validatedData['email'] ?? $user->email;
+        $user->phone = $validatedData['phone'] ?? $user->phone;
+        $user->dob = $validatedData['dob'] ?? $user->dob;
+        $user->bio = $validatedData['bio'] ?? $user->bio;
+
+        if ($request->hasFile('avatar')) {
+            $user->avatar = upload_image($request->file('avatar'));
+        }
+
+        $user->save();
+
+        return $this->sendSuccessResponse($user, 'Profile updated successfully');
+    }
+
     public function logout()
     {
         $user = request()->user();

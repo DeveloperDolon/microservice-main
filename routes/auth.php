@@ -9,4 +9,6 @@ Route::controller(AuthController::class)
     Route::post('/signup', 'signup');
     Route::post('/login', 'login');
     Route::post('/logout', 'logout')->middleware('auth:sanctum');
+    Route::get('/me', 'me')->middleware('auth:sanctum');
+    Route::put('/update', 'updateProfile')->middleware('auth:sanctum');
 });
