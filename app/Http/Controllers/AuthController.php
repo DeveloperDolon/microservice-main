@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AuthRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends BaseController
 {
@@ -26,5 +27,24 @@ class AuthController extends BaseController
         ]);
 
         return $this->sendSuccessResponse($user, 'User created successfully', 201);
+    }
+
+    public function login(Request $request)
+    {
+        $loginCredentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
+        
+        if (Auth::attempt($loginCredentials)) {
+            $user = User::where('email', $request->email)->first();
+            $token = $user->createToken('auth_token')->plainTextToken;
+
+            return $this->sendSuccessResponse([
+                'user' => $user,
+                'token' => $token,
+            ], 'Login successful');
+        }
+        return $this->sendErrorResponse('Invalid credentials', 401);
     }
 }
