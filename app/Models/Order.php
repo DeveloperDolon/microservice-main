@@ -33,7 +33,7 @@ class Order extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    static function boot()
+    static function booted()
     {
         static::creating((function ($model) {
             $model->id = (string) \Illuminate\Support\Str::uuid();
