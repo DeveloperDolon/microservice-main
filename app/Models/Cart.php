@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Cart extends Model
 {
     use HasFactory;
-
     protected $keyType = 'string';
     public $incrementing = false;
 
@@ -31,7 +30,7 @@ class Cart extends Model
         return $this->hasMany(CartItem::class, 'cart_id');
     }
 
-    static function boot()
+    static function booted()
     {
         static::creating((function ($model) {
             $model->id = (string) \Illuminate\Support\Str::uuid();

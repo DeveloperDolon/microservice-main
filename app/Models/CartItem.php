@@ -33,7 +33,7 @@ class CartItem extends Model
         return $this->belongsTo(Variant::class, 'variant_id');
     }
 
-    static function boot()
+    static function booted()
     {
         static::creating((function ($model) {
             $model->id = (string) \Illuminate\Support\Str::uuid();
