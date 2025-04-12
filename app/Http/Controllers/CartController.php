@@ -29,7 +29,7 @@ class CartController extends BaseController
                 'quantity' => $cartItemData['quantity'],
                 'variant_id' => $cartItemData['variant_id'],
             ]);
-            $cartItem->cart();
+            $cartItem->load('cart');
             return $this->sendSuccessResponse($cartItem, 'Product added to cart successfully', 200);
         } else {
             $cart = Cart::create([
@@ -44,8 +44,8 @@ class CartController extends BaseController
                 'product_id' => $cartItemData['product_id'],
                 'quantity' => $cartItemData['quantity'],
                 'variant_id' => $cartItemData['variant_id'],
-            ]); 
-            $cartItem->cart();
+            ]);
+            $cartItem->load('cart');
             return $this->sendSuccessResponse($cartItem, 'Product added to cart successfully', 200);
         }
     }

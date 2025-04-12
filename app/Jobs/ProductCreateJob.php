@@ -18,7 +18,7 @@ class ProductCreateJob implements ShouldQueue
 
     public function handle(): void
     {
-        Product::create([
+        $product = Product::create([
             'id' => $this->data['id'],
             'name' => $this->data['name'],
             'images' => $this->data['images'],
@@ -35,5 +35,19 @@ class ProductCreateJob implements ShouldQueue
             'created_at' => $this->data['created_at'],
             'updated_at' => $this->data['updated_at'],
         ]);
+
+        if (isset($this->data['variants'])) {
+            $variants = is_object($this->data['variants']) ?
+                $this->data['variants']->toArray() :
+                $this->data['variants'];
+
+            foreach ($variants as $variant) {
+                $product->variants()->create([
+                    'name' => $variant['name'],
+                    'price' => $variant['price'],
+                    'stock' => $variant['stock'],
+                ]);
+            }
+        }
     }
 }
