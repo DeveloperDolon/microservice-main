@@ -15,7 +15,7 @@ class CartController extends BaseController
             'product_id' => 'required|exists:products,id',
             'quantity' => 'required|integer|min:1',
             'variant_id' => 'required|exists:variants,id',
-        ]);   
+        ]);
         
         $cartIsExist = Cart::where('customer_id', request()->user()->id)
             ->first();
