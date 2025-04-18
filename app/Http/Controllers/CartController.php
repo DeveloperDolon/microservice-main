@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use App\Models\CartItem;
-use App\Models\Product;
+use App\Models\Variant;
 use Illuminate\Http\Request;
 
 class CartController extends BaseController
@@ -15,12 +15,18 @@ class CartController extends BaseController
             'product_id' => 'required|exists:products,id',
             'quantity' => 'required|integer|min:1',
             'variant_id' => 'required|exists:variants,id',
-        ]);        
+        ]);   
         
         $cartIsExist = Cart::where('customer_id', request()->user()->id)
             ->first();
 
-        $product = Product::find($cartItemData['product_id']);
+        $variant = Variant::find($cartItemData['variant_id']);
+        if(!$variant->stock >= $cartItemData['quantity']) {
+            return $this->sendErrorResponse('Insufficient product quantity!', 400);
+        }
+
+        $variant->stock = $variant->stock - $cartItemData['quantity'];
+        $variant->save();
 
         if($cartIsExist) {
             $cartItem = CartItem::create([
@@ -34,7 +40,7 @@ class CartController extends BaseController
         } else {
             $cart = Cart::create([
                 'customer_id' => request()->user()->id,
-                'price' => $product->price,
+                'price' => $variant->price,
                 'discount_amount' => 0,
                 'coupon_code' => null,
             ]);

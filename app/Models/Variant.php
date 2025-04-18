@@ -13,6 +13,7 @@ class Variant extends Model
     public $incrementing = false;
 
     protected $fillable = [
+        'id',
         'name',
         'product_id',
         'stock',
@@ -22,12 +23,5 @@ class Variant extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
-    }
-
-    static function booted()
-    {
-        static::creating(function ($model) {
-            $model->id = (string) \Illuminate\Support\Str::uuid();
-        });
     }
 }
