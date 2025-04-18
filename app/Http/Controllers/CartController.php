@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\VariantUpdateJob;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Variant;
@@ -28,6 +29,8 @@ class CartController extends BaseController
         $variant->stock = $variant->stock - $cartItemData['quantity'];
         $variant->save();
 
+        VariantUpdateJob::dispatch($variant->toArray())->onConnection('rabbitmq')->onQueue('admin_queue');
+        
         if($cartIsExist) {
             $cartItem = CartItem::create([
                 'cart_id' => $cartIsExist->id,
