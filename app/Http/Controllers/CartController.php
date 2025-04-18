@@ -30,22 +30,37 @@ class CartController extends BaseController
         $variant->save();
 
         VariantUpdateJob::dispatch($variant->toArray())->onConnection('rabbitmq')->onQueue('admin_queue');
-        
+
         if($cartIsExist) {
-            $cartItem = CartItem::create([
-                'cart_id' => $cartIsExist->id,
-                'product_id' => $cartItemData['product_id'],
-                'quantity' => $cartItemData['quantity'],
-                'variant_id' => $cartItemData['variant_id'],
-            ]);
+            $cartItem = CartItem::where('variant_id', $cartItemData['variant_id'])
+            ->orWhere('product_id', $cartItemData['product_id'])
+            ->first();
+
+            if($cartItem) {
+                $cartItem->quantity = $cartItem->quantity + $cartItemData['quantity'];
+                $cartItem->save();
+            } else {
+                $cartItem = CartItem::create([
+                    'cart_id' => $cartIsExist->id,
+                    'product_id' => $cartItemData['product_id'],
+                    'quantity' => $cartItemData['quantity'],
+                    'variant_id' => $cartItemData['variant_id'],
+                ]);
+            }
+
+            $cartIsExist->quantity = $cartIsExist->quantity + $cartItemData['quantity'];
+            $cartIsExist->price = $cartIsExist->price + ($variant->price * $cartItemData['quantity']);
+            $cartIsExist->save();
+
             $cartItem->load('cart');
             return $this->sendSuccessResponse($cartItem, 'Product added to cart successfully', 200);
         } else {
             $cart = Cart::create([
                 'customer_id' => request()->user()->id,
-                'price' => $variant->price,
+                'price' => $variant->price * $cartItemData['quantity'],
                 'discount_amount' => 0,
                 'coupon_code' => null,
+                'quantity' => $cartItemData['quantity'],
             ]);
 
             $cartItem = CartItem::create([
