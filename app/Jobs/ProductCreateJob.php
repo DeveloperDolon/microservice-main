@@ -43,9 +43,12 @@ class ProductCreateJob implements ShouldQueue
 
             foreach ($variants as $variant) {
                 $product->variants()->create([
+                    'id' => $variant['id'],
                     'name' => $variant['name'],
                     'price' => $variant['price'],
                     'stock' => $variant['stock'],
+                    'created_at' => $variant['created_at'],
+                    'updated_at' => $variant['updated_at'],
                 ]);
             }
         }
