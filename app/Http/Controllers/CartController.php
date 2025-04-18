@@ -21,7 +21,7 @@ class CartController extends BaseController
             ->first();
 
         $variant = Variant::find($cartItemData['variant_id']);
-        if(!$variant->stock >= $cartItemData['quantity']) {
+        if(!($variant->stock >= $cartItemData['quantity'])) {
             return $this->sendErrorResponse('Insufficient product quantity!', 400);
         }
 
