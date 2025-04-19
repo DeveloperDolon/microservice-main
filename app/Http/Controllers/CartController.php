@@ -76,9 +76,8 @@ class CartController extends BaseController
 
     public function show() {
         $cart = Cart::where('customer_id', request()->user()->id)
+        ->with('items')
         ->first();
-
-        $cart->load('items');
 
         return $this->sendSuccessResponse($cart, 'User cart data retrieved successful!');
     }
