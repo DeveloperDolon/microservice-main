@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Product;
+use App\Models\Variant;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
@@ -39,16 +40,23 @@ class ProductUpdateJob implements ShouldQueue
             $variants = is_object($this->data['variants']) ?
                 $this->data['variants']->toArray() :
                 $this->data['variants'];
-
             foreach ($variants as $variant) {
-                $product->variants()->create([
-                    'id' => $variant['id'],
-                    'name' => $variant['name'],
-                    'price' => $variant['price'],
-                    'stock' => $variant['stock'],
-                    'created_at' => $variant['created_at'],
-                    'updated_at' => $variant['updated_at'],
-                ]);
+                $isVariantExist = Variant::find($variant['id']);
+                if ($isVariantExist) {
+                    $isVariantExist->name = $variant['name'];
+                    $isVariantExist->stock = $variant['stock'];
+                    $isVariantExist->price = $variant['price'];
+                    $isVariantExist->save();
+                } else {
+                    $product->variants()->create([
+                        'id' => $variant['id'],
+                        'name' => $variant['name'],
+                        'price' => $variant['price'],
+                        'stock' => $variant['stock'],
+                        'created_at' => $variant['created_at'],
+                        'updated_at' => $variant['updated_at'],
+                    ]);
+                }
             }
         }
     }
