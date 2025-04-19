@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Product;
+use App\Models\Variant;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
@@ -18,7 +19,7 @@ class ProductUpdateJob implements ShouldQueue
 
     public function handle(): void
     {
-        Product::find($this->data['id'])->update([
+        $product = Product::find($this->data['id'])->update([
             'name' => $this->data['name'],
             'images' => $this->data['images'],
             'discount' => $this->data['discount'],
@@ -34,5 +35,29 @@ class ProductUpdateJob implements ShouldQueue
             'created_at' => $this->data['created_at'],
             'updated_at' => $this->data['updated_at'],
         ]);
+
+        if (isset($this->data['variants'])) {
+            $variants = is_object($this->data['variants']) ?
+                $this->data['variants']->toArray() :
+                $this->data['variants'];
+            foreach ($variants as $variant) {
+                $isVariantExist = Variant::find($variant['id']);
+                if ($isVariantExist) {
+                    $isVariantExist->name = $variant['name'];
+                    $isVariantExist->stock = $variant['stock'];
+                    $isVariantExist->price = $variant['price'];
+                    $isVariantExist->save();
+                } else {
+                    $product->variants()->create([
+                        'id' => $variant['id'],
+                        'name' => $variant['name'],
+                        'price' => $variant['price'],
+                        'stock' => $variant['stock'],
+                        'created_at' => $variant['created_at'],
+                        'updated_at' => $variant['updated_at'],
+                    ]);
+                }
+            }
+        }
     }
 }
