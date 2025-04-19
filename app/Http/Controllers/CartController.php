@@ -73,4 +73,13 @@ class CartController extends BaseController
             return $this->sendSuccessResponse($cartItem, 'Product added to cart successfully', 200);
         }
     }
+
+    public function show() {
+        $cart = Cart::where('customer_id', request()->user()->id)
+        ->first();
+
+        $cart->load('items');
+
+        return $this->sendSuccessResponse($cart, 'User cart data retrieved successful!');
+    }
 }
