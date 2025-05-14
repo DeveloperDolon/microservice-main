@@ -35,7 +35,7 @@ class ProductCreateJob implements ShouldQueue
             'created_at' => $this->data['created_at'],
             'updated_at' => $this->data['updated_at'],
         ]);
-
+        
         if (isset($this->data['variants'])) {
             $variants = is_object($this->data['variants']) ?
                 $this->data['variants']->toArray() :
